@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: night --default;
+}
+
+/* Ajoutez vos styles personnalises ci-dessous */
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+
