@@ -1,3 +1,5 @@
+import {Trash} from "lucide-react"
+
 type priority = 'urgente' | 'moyenne' | 'basse'
 
 type Todo = {
@@ -8,19 +10,49 @@ type Todo = {
 
 type Props ={
     todo: Todo
+    onDelete: () => void
+    isSelected: boolean
+    onToggle: () => void
 }
-const Todoitem = ({todo} : Props) => {
+const Todoitem = ({todo, onDelete, isSelected, onToggle} : Props) => {
   return (
-   <li className="p-3">
+   <div className="p-3">
    <div className="flex justify-between items-center">
     <div className= "flex items-center gap-2">
-    <input type="checkbox" className="checkbox checkbox-primary checkbox-sm"/>
+    <input
+      type="checkbox"
+      checked={isSelected}
+      onChange={onToggle}
+      className="checkbox checkbox-primary checkbox-sm"
+    />
+    <span className= "text-md font-bold">
+      <span> {todo.text} </span>
+
+    </span >
+   <span
+            className={`badge badge-sm badge-soft ${
+              todo.priority === 'urgente'
+                ? 'badge-error'
+                : todo.priority === 'moyenne'
+                  ? 'badge-warning'
+                  : 'badge-success'
+            }`}
+          >
+            {todo.priority}
+    </span>
    
     </div>
+    
+      <button
+      onClick={onDelete}
+      className ="btn btn-sm btn-error">
+       <Trash className = "w-4 h-4" />
+      </button>
+    
 
    </div>
-    {todo.text}
-   </li>
+    
+   </div>
   )
 }
 

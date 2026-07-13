@@ -2,6 +2,8 @@
 import {useState} from 'react'
 import {useEffect} from 'react'
 import Todoitem from './Todoitem'
+import { Construction } from 'lucide-react'
+
 
 
  type priority = 'urgente' | 'moyenne' | 'basse'
@@ -39,7 +41,7 @@ function App() {
     setTodos(newTodos)
     setInput("")  
     setPriority('moyenne')
-    console.log(newTodos)
+  
   }
 
   let fliteredTodos: Todo[] = []
@@ -48,6 +50,46 @@ function App() {
   } else {
     fliteredTodos = todos.filter(todo => todo.priority === filter)
   }
+
+  const urgentCount = todos.filter((t) => t.priority === "urgente" ).length
+  const moyenneCount = todos.filter((t) => t.priority === "moyenne" ).length
+  const basseCount = todos.filter((t) => t.priority === "basse" ).length
+  const totalCount = todos.length
+
+  function deleteTodo(id:number) {
+    const newTodos = todos.filter((todo) => todo.id !== id)
+    setTodos(newTodos)
+    setselectTodos((currentSelection) => {
+      const newSelection = new Set(currentSelection)
+      newSelection.delete(id)
+      return newSelection
+    })
+  }
+
+  const [selectTodos, setselectTodos] = useState<Set<number>>(new Set())
+
+  function toggleTodo(id: number) {
+    setselectTodos((currentSelection) => {
+      const newSelection = new Set(currentSelection)
+
+      if (newSelection.has(id)) {
+        newSelection.delete(id)
+      } else {
+        newSelection.add(id)
+      }
+
+      return newSelection
+    })
+  }
+
+  function deleteSelectedTodos() {
+    setTodos((currentTodos) =>
+      currentTodos.filter((todo) => !selectTodos.has(todo.id))
+    )
+    setselectTodos(new Set())
+  }
+
+
   return (
     
     <div className="flex justify-center">
@@ -68,7 +110,23 @@ function App() {
       </div>
       <div className= "space-y-2 flex-1 h-fit">
         <div className="flex flex-wrap gap-4">
-          <button className={`btn btn-soft ${filter ==="Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Tous")}>Tous</button>
+
+          <button className={`btn btn-soft ${filter ==="Tous" ? "btn-primary" : ""}`} onClick={() => setFilter("Tous")}>Tous({totalCount})</button>
+
+          <button className={`btn btn-soft ${filter ==="basse" ? "btn-primary" : ""}`} onClick={() => setFilter("basse")}>Basse({basseCount})</button>
+
+          <button className={`btn btn-soft ${filter ==="moyenne" ? "btn-primary" : ""}`} onClick={() => setFilter("moyenne")}>Moyenne({moyenneCount})</button>
+
+          <button className={`btn btn-soft ${filter ==="urgente" ? "btn-primary" : ""}`} onClick={() => setFilter("urgente")}>Urgente({urgentCount})</button>
+
+          <button
+            className="btn btn-error"
+            disabled={selectTodos.size === 0}
+            onClick={deleteSelectedTodos}
+          >
+            Supprimer la sélection ({selectTodos.size})
+          </button>
+
         </div>
         {fliteredTodos.length > 0 ? (
 
@@ -76,7 +134,12 @@ function App() {
           { fliteredTodos.map((todo)=> (
             
             <li key={todo.id}>
-              <Todoitem todo={todo}/>
+              <Todoitem
+                todo={todo}
+                onDelete={() => deleteTodo(todo.id)}
+                isSelected={selectTodos.has(todo.id)}
+                onToggle={() => toggleTodo(todo.id)}
+              />
             </li>
           ))}
 
@@ -84,7 +147,13 @@ function App() {
         </ul>
       ) : (
 
-          <div>test2</div>
+        <div className='flex justify-center items-center flex-col p-5'>
+          <div>
+            <Construction className='w-40 h-40 text-primary'/>
+          </div>
+          <p className='py-8 text-center italic text-gray-400'>Aucune tâche n'a été ajouté</p>
+        </div>
+          
         )  
         }
       </div>
