@@ -6,7 +6,7 @@ import { Construction } from 'lucide-react'
 
 
 
- type priority = 'urgente' | 'moyenne' | 'basse'
+  type priority = 'urgente' | 'moyenne' | 'basse'
 
 type Todo = {
   id: number
@@ -124,7 +124,7 @@ function App() {
             disabled={selectTodos.size === 0}
             onClick={deleteSelectedTodos}
           >
-            Supprimer la sélection ({selectTodos.size})
+           Supprimer la sélection ({selectTodos.size})
           </button>
 
         </div>
